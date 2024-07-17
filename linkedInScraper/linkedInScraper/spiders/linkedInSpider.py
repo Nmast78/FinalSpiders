@@ -37,22 +37,26 @@ class LinkedinspiderSpider(scrapy.Spider):
         keyword = response.meta['keyword']
         location = response.meta['location']
         # Get key data from each partial job view
-        jobID = response.xpath("//div[@class='base-card relative']/@data-reference-id").extract()
-        jobTitle = response.xpath("//h3[@class='base-search-card_title']/text()").extract()
+        jobID = response.xpath("//div[contains(@class, 'base-card relative')]/@data-reference-id").extract()
+        jobTitle = response.xpath("//h3[@class='base-search-card__title']/text()").extract()
+        stripped_titles = [title.strip() for title in jobTitle]
         jobCompany = response.xpath("//a[@class='hidden-nested-link']/text()").extract()
-        jobLocation = response.xpath("//span[@class='job-search-card_location']/text()").extract()
-        timeAgoPosted = response.xpath("//time[@class='job-search-card_listdate']/text()").extract()
-        jobUrl = response.xpath("//a[@class='base-card_full-link']/@href()").extract()
+        stripped_Company = [title.strip() for title in jobCompany]
+        jobLocation = response.xpath("//span[@class='job-search-card__location']/text()").extract()
+        stripped_Location = [title.strip() for title in jobLocation]
+        timeAgoPosted = response.xpath("//time[@class='job-search-card__listdate']/text()").extract()
+        stripped_Time = [time.strip() for time in timeAgoPosted] 
+        jobUrl = response.xpath("//a[contains(@class, 'base-card__full-link')]/@href").extract()
 
         # Loop through arrays from parsing and build IndeedScraperItems
         for i in range(len(jobTitle)):
             jobItem = LinkedinscraperItem()
 
             jobItem['jobID'] = jobID[i].strip() if i < len(jobID) else None
-            jobItem['title'] = jobTitle[i].strip() if i < len(jobTitle) else None
-            jobItem['company'] = jobCompany[i].strip() if i < len(jobCompany) else None
-            jobItem['location'] = jobLocation[i].strip() if i < len(jobLocation) else None
-            jobItem['time'] = timeAgoPosted[i] if i < len(timeAgoPosted) else None
+            jobItem['title'] = stripped_titles[i].strip() if i < len(jobTitle) else None
+            jobItem['company'] = stripped_Company[i].strip() if i < len(jobCompany) else None
+            jobItem['location'] = stripped_Location[i].strip() if i < len(jobLocation) else None
+            jobItem['time'] = stripped_Time[i] if i < len(timeAgoPosted) else None
             jobItem['url'] = jobUrl[i].strip() if i < len(jobUrl) else None
 
             # List of fields to check
@@ -72,9 +76,9 @@ class LinkedinspiderSpider(scrapy.Spider):
         
         # Get link to next page if there is one. Call parse on that page
         """
-        for i in range(1,20):
+        for i in range(1,2):
             next_page = self.getRequestUrl(keyword, location, i)
-            yield scrapy.Request(next_page, callback=self.parse)
+            yield scrapy.Request(next_page, callback=self.parse, meta={'keyword': keyword, 'location' : location})
         """
 
     # Go into each job and get things like full job description and external link
