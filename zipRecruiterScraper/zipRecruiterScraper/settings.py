@@ -87,7 +87,7 @@ EXTENSIONS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    #"zipRecruiterScraper.pipelines.ZiprecruiterscraperPipeline": 300,
+    "zipRecruiterScraper.pipelines.ZiprecruiterscraperPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

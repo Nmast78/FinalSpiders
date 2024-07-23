@@ -20,9 +20,9 @@ class ZiprecruiterscraperPipeline:
         load_dotenv(override=True)
 
         self.connPool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name = "indeedPool",
+            pool_name = "zipRecruiterPool",
             pool_size=5,
-            host = 'localhost',
+            host = 'host.docker.internal',
             user = os.getenv("USERNAME"),
             password = os.getenv("PASSWORD"),
             database = 'internshipdatabase'
@@ -32,7 +32,7 @@ class ZiprecruiterscraperPipeline:
             self.conn = self.connPool.get_connection()
             self.curr = self.conn.cursor()
         except:
-            Error("There was an error connection to the database")
+            Error("There was an error connecting to the database")
 
     # Method automatically called to process the item passed into it from our spider
     def process_item(self, jobItem , spider):

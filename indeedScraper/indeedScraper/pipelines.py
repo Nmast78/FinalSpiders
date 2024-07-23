@@ -23,7 +23,7 @@ class IndeedPipeline:
         self.connPool = mysql.connector.pooling.MySQLConnectionPool(
             pool_name = "indeedPool",
             pool_size=5,
-            host = 'localhost',
+            host = 'host.docker.internal',
             user = os.getenv("USERNAME"),
             password = os.getenv("PASSWORD"),
             database = 'internshipdatabase'
@@ -33,14 +33,14 @@ class IndeedPipeline:
             self.conn = self.connPool.get_connection()
             self.curr = self.conn.cursor()
         except:
-            Error("There was an error connection to the database")
+            Error("There was an error connecting to the database")
 
     # Method automatically called to process the item passed into it from our spider
     def process_item(self, jobItem, spider):
         # Hashing function to hash job title to create unique key
         customID = int(hashlib.sha1(jobItem['title'].encode("utf-8")).hexdigest(), 16)
         # Create the insert statement
-        self.curr.execute("""INSERT INTO jobs
+        self.curr.execute("""INSERT INTO arkansas
                           (id, webid, title, company, location, partialdesc, timeindays, url, fulladdress, exturl, fulldesc) VALUES
                           (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                           (
