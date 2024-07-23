@@ -39,6 +39,7 @@ class GooglejobsspiderSpider(scrapy.Spider):
                         PageMethod('wait_for_timeout', 5000),
                     ],
                     'dont_redirect': True,
+                    'tableName': location,
                 },
                 errback=self.errback
             )
@@ -77,6 +78,9 @@ class GooglejobsspiderSpider(scrapy.Spider):
         # Loop through arrays from parsing and build IndeedScraperItems
         for i in range(len(jobTitle)):
             jobItem = GooglejobsscraperItem()
+
+            # Set tableName
+            jobItem['tableName'] = response.meta['tableName']
 
             jobItem['jobID'] = jobID[i].strip() if i < len(jobID) else None
             jobItem['title'] = jobTitle[i].strip() if i < len(jobTitle) else None

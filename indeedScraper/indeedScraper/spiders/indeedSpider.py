@@ -31,7 +31,7 @@ class IndeedspiderSpider(scrapy.Spider):
         # For each state get the url and call scrapy request
         for location in locationList:
             indeedUrl = self.getRequestUrl(keyword, location)
-            yield scrapy.Request(indeedUrl, callback=self.parse)
+            yield scrapy.Request(indeedUrl, callback=self.parse, meta={'tableName': location})
 
     # Parse through the response and collect data
     def parse(self, response):
@@ -53,6 +53,9 @@ class IndeedspiderSpider(scrapy.Spider):
         # Loop through arrays from parsing and build IndeedScraperItems
         for i in range(len(jobTitle)):
             jobItem = IndeedscraperItem()
+
+            # Set tableName
+            jobItem['tableName'] = response.meta['tableName']
 
             jobItem['jobID'] = jobID[i].strip() if i < len(jobID) else None
             jobItem['title'] = jobTitle[i].strip() if i < len(jobTitle) else None
@@ -82,7 +85,7 @@ class IndeedspiderSpider(scrapy.Spider):
         nextPage = response.xpath("//a[@class='css-akkh0a e8ju0x50']/@href").extract()
         if nextPage:
             nextPageLink = "https://www.indeed.com" + nextPage[0]
-            yield scrapy.Request(nextPageLink, callback=self.parse)
+            yield scrapy.Request(nextPageLink, callback=self.parse, meta={'tableName': jobItem['tableName']})
         """
 
     # Go into each job and get things like full job description and external link

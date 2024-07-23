@@ -81,6 +81,9 @@ class ZiprecruiterspiderSpider(scrapy.Spider):
                     locationMatch = re.search(r"location=([^']+)", job.get('LocationURL')) 
                     jobItem = ZipRecruiterscraperItem()
                     
+                    # Set tableName
+                    jobItem['tableName'] = location
+
                     jobItem['jobID'] = None
                     jobItem['title'] = job.get('Title') or None
                     jobItem['company'] = job.get('OrgName') or None

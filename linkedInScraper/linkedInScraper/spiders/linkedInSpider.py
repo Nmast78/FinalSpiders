@@ -52,6 +52,9 @@ class LinkedinspiderSpider(scrapy.Spider):
         for i in range(len(jobTitle)):
             jobItem = LinkedinscraperItem()
 
+            # Set tableName
+            jobItem['tableName'] = location
+
             jobItem['jobID'] = jobID[i].strip() if i < len(jobID) else None
             jobItem['title'] = stripped_titles[i].strip() if i < len(jobTitle) else None
             jobItem['company'] = stripped_Company[i].strip() if i < len(jobCompany) else None
