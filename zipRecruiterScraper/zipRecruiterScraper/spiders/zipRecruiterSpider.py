@@ -88,7 +88,6 @@ class ZiprecruiterspiderSpider(scrapy.Spider):
                     jobItem['title'] = job.get('Title') or None
                     jobItem['company'] = job.get('OrgName') or None
                     jobItem['location'] = job.get('Locations') or locationMatch.group(1) or None
-                    jobItem['partDescription'] = None
                     jobItem['time'] = job.get('PostedTime') or None
                     jobItem['url'] = job.get('JobURL') or None
 

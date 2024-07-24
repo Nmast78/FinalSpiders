@@ -50,16 +50,16 @@ class GooglejobsspiderSpider(scrapy.Spider):
         page = response.meta["playwright_page"]
         # Scroll down page
         # FOR SOME REASON INFINITE SCROLLING NOT WORKING
-        div_selector = "div.zxU94d"
-        await page.wait_for_selector(div_selector)
-        for i in range(1,12):
-            quote_count = 10 * i
-            # await page.wait_for_selector(f".iFjolb:nth-child({quote_count})")
-            await page.evaluate(f"""
-                let div = document.querySelector("div.zxU94d");
-                div.scrollTop = div.scrollHeight;
-            """)
-        screenshot = await page.screenshot(path="example.png", full_page=True)
+        # div_selector = "div.zxU94d"
+        # await page.wait_for_selector(div_selector)
+        # for i in range(1,12):
+        #     quote_count = 10 * i
+        #     # await page.wait_for_selector(f".iFjolb:nth-child({quote_count})")
+        #     await page.evaluate(f"""
+        #         let div = document.querySelector("div.zxU94d");
+        #         div.scrollTop = div.scrollHeight;
+        #     """)
+        # screenshot = await page.screenshot(path="example.png", full_page=True)
         # Wait for the page content
         html = await page.content()
         # Wait for the page to close
@@ -71,7 +71,6 @@ class GooglejobsspiderSpider(scrapy.Spider):
         jobTitle = newResponse.xpath("//div[@class='BjJfJf PUpOsf']/text()").extract()
         jobCompany = newResponse.xpath("//div[@class='vNEEBe']/text()").extract()
         jobLocation = newResponse.xpath("//div[@class='Qk80Jf']/text()").extract()
-        # briefDescription = newResponse.xpath("").extract() # Doesn't work
         timeAgoPosted = newResponse.xpath("//span[@class='LL4CDc' and contains(@aria-label, 'Posted')]/span/text()").extract()
         jobUrl = newResponse.xpath("//div[@data-share-url]/@data-share-url").extract()
 
@@ -86,7 +85,6 @@ class GooglejobsspiderSpider(scrapy.Spider):
             jobItem['title'] = jobTitle[i].strip() if i < len(jobTitle) else None
             jobItem['company'] = jobCompany[i].strip() if i < len(jobCompany) else None
             jobItem['location'] = jobLocation[i].strip() if i < len(jobLocation) else None
-            #jobItem['partDescription'] = briefDescription[i].strip() if i < len(briefDescription) else None
             jobItem['time'] = timeAgoPosted[i] if i < len(timeAgoPosted) else None
             jobItem['url'] = jobUrl[i].strip() if i < len(jobUrl) else None
 
@@ -98,7 +96,7 @@ class GooglejobsspiderSpider(scrapy.Spider):
                 if jobItem[field] is None:
                     # SEND EMAIL
                     pass
-
+                
             yield jobItem
             # Use this and comment out above yield jobItem to parse each full job
             """

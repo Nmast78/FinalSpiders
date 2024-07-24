@@ -40,15 +40,11 @@ class IndeedspiderSpider(scrapy.Spider):
         jobTitle = response.xpath("//a[@class='jcs-JobTitle css-jspxzf eu4oa1w0']/span/text()").extract()
         jobCompany = response.xpath("//span[@class='css-63koeb eu4oa1w0']/text()").extract()
         jobLocation = response.xpath("//div[@class='css-1p0sjhy eu4oa1w0']/text()").extract()
-        briefDescription = response.xpath("//div[@class='css-9446fg eu4oa1w0']/text()").extract() # Doesn't work
         timeAgoPosted = response.xpath("//span[@class='css-qvloho eu4oa1w0']/text()").extract()
         jobUrl = response.xpath("//a[@class='jcs-JobTitle css-jspxzf eu4oa1w0']/@href").extract()
 
         # Remove non-breaking space characters in location field
         jobLocation = [location for location in jobLocation if location != '\xa0']
-        # Grab digit from timeAgoPosted string
-        timeAgoPosted = [int(re.findall(r'\d+', item)[0]) if re.findall(r'\d+', item) else 0 for item in timeAgoPosted]
-
 
         # Loop through arrays from parsing and build IndeedScraperItems
         for i in range(len(jobTitle)):
@@ -61,12 +57,11 @@ class IndeedspiderSpider(scrapy.Spider):
             jobItem['title'] = jobTitle[i].strip() if i < len(jobTitle) else None
             jobItem['company'] = jobCompany[i].strip() if i < len(jobCompany) else None
             jobItem['location'] = jobLocation[i].strip() if i < len(jobLocation) else None
-            jobItem['partDescription'] = briefDescription[i].strip() if i < len(briefDescription) else None
             jobItem['time'] = timeAgoPosted[i] if i < len(timeAgoPosted) else None
             jobItem['url'] = "https://www.indeed.com" + jobUrl[i].strip() if i < len(jobUrl) else None
 
             # List of fields to check
-            fields_to_check = ['jobID', 'title', 'company', 'location', 'partDescription', 'time', 'url']
+            fields_to_check = ['jobID', 'title', 'company', 'location', 'time', 'url']
 
             # Check for None fields and send email if any of them are
             for field in fields_to_check:

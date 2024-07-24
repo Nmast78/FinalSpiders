@@ -37,20 +37,20 @@ class ZiprecruiterscraperPipeline:
     # Method automatically called to process the item passed into it from our spider
     def process_item(self, jobItem , spider):
         # Hashing function to hash job title to create unique key
-        customID = int(hashlib.sha1(jobItem['title'].encode("utf-8")).hexdigest(), 16)
+        unique = jobItem['title'] + jobItem['location']
+        customID = int(hashlib.sha1(unique.encode("utf-8")).hexdigest(), 16)
         # Get the table name
         tableName = jobItem['tableName']
         # Create the insert statement
         self.curr.execute(f"""INSERT INTO {tableName}
-                          (id, webid, title, company, location, partialdesc, timeindays, url, fulladdress, exturl, fulldesc) VALUES
-                          (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                          (id, webid, title, company, location, time, url, fulladdress, exturl, fulldesc) VALUES
+                          (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                           (
                             customID,  
                             jobItem['jobID'],
                             jobItem['title'],
                             jobItem['company'],
                             jobItem['location'],
-                            jobItem['partDescription'],
                             jobItem['time'],
                             jobItem['url'],
                             None, 

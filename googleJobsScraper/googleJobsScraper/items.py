@@ -12,7 +12,6 @@ class GooglejobsscraperItem(scrapy.Item):
     title = scrapy.Field()
     company = scrapy.Field()
     location = scrapy.Field()
-    partDescription = scrapy.Field()
     time = scrapy.Field()
     url = scrapy.Field()
     fullAddress = scrapy.Field()
