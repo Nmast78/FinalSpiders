@@ -1,4 +1,5 @@
 import asyncio
+import time
 from googleJobsScraper.items import GooglejobsscraperItem
 import scrapy
 from scrapy_playwright.page import PageMethod
@@ -49,19 +50,11 @@ class GooglejobsspiderSpider(scrapy.Spider):
         # Grab the page from the playwright meta data
         page = response.meta["playwright_page"]
         # Scroll down page
-        # FOR SOME REASON INFINITE SCROLLING NOT WORKING
-        # div_selector = "div.zxU94d"
-        # await page.wait_for_selector(div_selector)
-        # for i in range(1,12):
-        #     quote_count = 10 * i
-        #     # await page.wait_for_selector(f".iFjolb:nth-child({quote_count})")
-        #     await page.evaluate(f"""
-        #         let div = document.querySelector("div.zxU94d");
-        #         div.scrollTop = div.scrollHeight;
-        #     """)
-        # screenshot = await page.screenshot(path="example.png", full_page=True)
+        for i in range(1,3):
+            page.keyboard.press("End")
+        time.sleep(2)
         # Wait for the page content
-        html = await page.content()
+        html = page.content()
         # Wait for the page to close
         await page.close()
         # Get all jobs from the html content and store in new response variable
